@@ -12,8 +12,8 @@ angular.module('jkuri.touchspin', [])
 		scope.decimals = attrs.decimals || 0;
 		scope.stepInterval = attrs.stepInterval || 100;
 		scope.stepIntervalDelay = attrs.stepIntervalDelay || 500;
-		scope.initval = attrs.initval || scope.min;
-		scope.val = attrs.value || scope.initval || scope.min;
+		scope.initval = attrs.initval || '';
+		scope.val = attrs.value || scope.initval;
 	};
 
 	return {
@@ -30,18 +30,22 @@ angular.module('jkuri.touchspin', [])
 
 			scope.decrement = function () {
 				oldval = scope.val;
-				var value = parseFloat(parseFloat(scope.val) - parseFloat(scope.step)).toFixed(scope.decimals);
+				var value = parseFloat(parseFloat(Number(scope.val)) - parseFloat(scope.step)).toFixed(scope.decimals);
 
-				if (value < scope.min) return;
+				if (value < scope.min) {
+					value = parseFloat(scope.min).toFixed(scope.decimals);
+					scope.val = value;
+					ngModel.$setViewValue(value);
+					return;
+				}
 
 				scope.val = value;
 				ngModel.$setViewValue(value);
 			};
 
 			scope.increment = function () {
-				scope.checkValue();
 				oldval = scope.val;
-				var value = parseFloat(parseFloat(scope.val) + parseFloat(scope.step)).toFixed(scope.decimals);
+				var value = parseFloat(parseFloat(Number(scope.val)) + parseFloat(scope.step)).toFixed(scope.decimals);
 
 				if (value > scope.max) return;
 
@@ -64,6 +68,7 @@ angular.module('jkuri.touchspin', [])
 			};
 
 			scope.startSpinDown = function () {
+				scope.checkValue();
 				scope.decrement();
 
 				clickStart = Date.now();
@@ -88,22 +93,25 @@ angular.module('jkuri.touchspin', [])
 			};
 
 			scope.checkValue = function () {
-				if (scope.val === '' || !scope.val.match(/^-?(?:\d+|\d*\.\d+)$/i)) {
-					scope.val = oldval;
-					ngModel.$setViewValue(oldval);
+				var val;
+
+				if (scope.val !== '' && !scope.val.match(/^-?(?:\d+|\d*\.\d+)$/i)) {
+					val = oldval !== '' ? parseFloat(oldval).toFixed(scope.decimals) : parseFloat(scope.min).toFixed(scope.decimals);
+					scope.val = val;
+					ngModel.$setViewValue(val);
 				}
 			};
 
 		},
 		template: 
 		'<div class="input-group">' +
-		'  <span class="input-group-btn">' +
+		'  <span class="input-group-btn" ng-show="!verticalButtons">' +
 		'    <button class="btn btn-default" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()"><i class="fa fa-minus"></i></button>' +
 		'  </span>' +
 		'  <span class="input-group-addon" ng-show="prefix" ng-bind="prefix"></span>' +
 		'  <input type="text" ng-model="val" class="form-control" ng-blur="checkValue()">' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
-		'  <span class="input-group-btn">' +
+		'  <span class="input-group-btn" ng-show="!verticalButtons">' +
 		'    <button class="btn btn-default" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()"><i class="fa fa-plus"></i></button>' +
 		'  </span>' +
 		'</div>'
