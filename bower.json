@@ -1,0 +1,22 @@
+{
+  "name": "ngTouchSpin",
+  "version": "0.2.0",
+  "homepage": "https://github.com/jkuri/ngTouchSpin",
+  "authors": [
+    "Jan Kuri <jkuri88@gmail.com>"
+  ],
+  "description": "AngularJS Bootstrap Touchspin Implementation",
+  "main": "src/js/ngTouchSpin.js",
+  "keywords": [
+    "Bootstrap",
+    "Touchspin"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
