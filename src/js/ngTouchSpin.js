@@ -102,6 +102,10 @@ angular.module('jkuri.touchspin', [])
 				}
 			};
 
+			ngModel.$render = function () {
+				scope.val = ngModel.$viewValue;
+			};
+
 		},
 		template: 
 		'<div class="input-group">' +
