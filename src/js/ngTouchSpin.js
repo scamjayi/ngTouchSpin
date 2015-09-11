@@ -1,7 +1,12 @@
 angular.module('jkuri.touchspin', [])
 
-.directive('ngTouchSpin', ['$timeout', '$interval', function($timeout, $interval) {
+.directive('ngTouchSpin', ['$timeout', '$interval', '$document', function($timeout, $interval, $document) {
 	'use strict';
+
+	var key_codes = {
+		left  : 37,
+		right : 39
+	};
 
 	var setScopeValues = function (scope, attrs) {
 		scope.min = attrs.min || 0;
@@ -24,9 +29,11 @@ angular.module('jkuri.touchspin', [])
 		link: function (scope, element, attrs, ngModel) {
 			setScopeValues(scope, attrs);
 
+			var $body = $document.find('body');
 			var timeout, timer, helper = true, oldval = scope.val, clickStart;
 
 			ngModel.$setViewValue(scope.val);
+			scope.focused = false;
 
 			scope.decrement = function () {
 				oldval = scope.val;
@@ -100,11 +107,35 @@ angular.module('jkuri.touchspin', [])
 					scope.val = val;
 					ngModel.$setViewValue(val);
 				}
+
+				scope.focused = false;
+			};
+
+			scope.focus = function () {
+				scope.focused = true;
 			};
 
 			ngModel.$render = function () {
 				scope.val = ngModel.$viewValue;
 			};
+
+			$body.bind('keydown', function(event) {
+				if (!scope.focused) {
+					return;
+				}
+
+				event.preventDefault();
+
+				var which = event.which;
+
+				if (which === key_codes.right) {
+					scope.increment();
+				} else if (which === key_codes.left) {
+					scope.decrement();
+				}
+
+				scope.$apply();
+			});
 
 		},
 		template: 
@@ -113,7 +144,7 @@ angular.module('jkuri.touchspin', [])
 		'    <button class="btn btn-default" ng-mousedown="startSpinDown()" ng-mouseup="stopSpin()"><i class="fa fa-minus"></i></button>' +
 		'  </span>' +
 		'  <span class="input-group-addon" ng-show="prefix" ng-bind="prefix"></span>' +
-		'  <input type="text" ng-model="val" class="form-control" ng-blur="checkValue()">' +
+		'  <input type="text" ng-model="val" class="form-control" ng-blur="checkValue()" ng-focus="focus()">' +
 		'  <span class="input-group-addon" ng-show="postfix" ng-bind="postfix"></span>' +
 		'  <span class="input-group-btn" ng-show="!verticalButtons">' +
 		'    <button class="btn btn-default" ng-mousedown="startSpinUp()" ng-mouseup="stopSpin()"><i class="fa fa-plus"></i></button>' +
