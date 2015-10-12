@@ -9,9 +9,9 @@ angular.module('jkuri.touchspin', [])
 	};
 
 	var setScopeValues = function (scope, attrs) {
-		scope.min = attrs.min || 0;
-		scope.max = attrs.max || 100;
-		scope.step = attrs.step || 1;
+		scope.min = parseFloat(attrs.min) || 0;
+		scope.max = parseFloat(attrs.max) || 100;
+		scope.step = parseFloat(attrs.step) || 1;
 		scope.prefix = attrs.prefix || undefined;
 		scope.postfix = attrs.postfix || undefined;
 		scope.decimals = attrs.decimals || 0;
