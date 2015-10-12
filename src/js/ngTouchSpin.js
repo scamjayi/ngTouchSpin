@@ -8,18 +8,18 @@ angular.module('jkuri.touchspin', [])
 		right : 39
 	};
 
-	var setScopeValues = function (scope, attrs) {
-		scope.min = attrs.min || 0;
-		scope.max = attrs.max || 100;
-		scope.step = attrs.step || 1;
-		scope.prefix = attrs.prefix || undefined;
-		scope.postfix = attrs.postfix || undefined;
-		scope.decimals = attrs.decimals || 0;
-		scope.stepInterval = attrs.stepInterval || 100;
-		scope.stepIntervalDelay = attrs.stepIntervalDelay || 500;
-		scope.initval = attrs.initval || '';
-		scope.val = attrs.value || scope.initval;
-	};
+	 var setScopeValues = function (scope, attrs) {
+	  	scope.min = parseFloat(attrs.min) || 0;
+	  	scope.max = parseFloat(attrs.max) || 100;
+	  	scope.step = parseFloat(attrs.step) || 1;
+	  	scope.prefix = attrs.prefix || undefined;
+	  	scope.postfix = attrs.postfix || undefined;
+	  	scope.decimals = parseInt(attrs.decimals) || 0;
+	  	scope.stepInterval = parseInt(attrs.stepInterval) || 100;
+	  	scope.stepIntervalDelay = parseInt(attrs.stepIntervalDelay) || 500;
+	  	scope.initval = attrs.initval || '';
+	  	scope.val = attrs.value || scope.initval;
+	 };
 
 	return {
 		restrict: 'EA',
